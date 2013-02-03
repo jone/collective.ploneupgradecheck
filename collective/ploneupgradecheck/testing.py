@@ -1,4 +1,5 @@
 from collective.ploneupgradecheck.interfaces import IFileRegistry
+from collective.ploneupgradecheck.interfaces import IImportRegistry
 from plone.testing import Layer
 from plone.testing import zca
 from zope.component import getUtility
@@ -23,6 +24,9 @@ class ZCMLLayer(Layer):
         file_registry = getUtility(IFileRegistry)
         file_registry.clear()
         file_registry.load(self.my_package_path)
+
+        import_registry = getUtility(IImportRegistry)
+        import_registry.clear()
 
     def tearDown(self):
         zca.popGlobalRegistry()

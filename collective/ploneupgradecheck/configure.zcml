@@ -7,4 +7,9 @@
         provides="collective.ploneupgradecheck.interfaces.IFileRegistry"
         />
 
+    <utility
+        factory="collective.ploneupgradecheck.imports.create_import_registry"
+        provides="collective.ploneupgradecheck.interfaces.IImportRegistry"
+        />
+
 </configure>
