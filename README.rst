@@ -24,6 +24,9 @@ Check out the repository and run the included buildout:
     $ python bootstrap.py
     $ bin/buildout
 
+This generates a ``bin/plone-4.3-check`` script.
+Run the script in any directory with code to check.
+
 
 Links
 -----
