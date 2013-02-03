@@ -38,10 +38,14 @@ class TestImportRegistry(TestCase):
         results = registry.get_imports('zope.app.component.hooks')
         results = list(filter_results_by_path('my/package/eventhandlers.py', results))
 
-        self.assertEqual(len(results), 1)
-        path, dottedname = results[0]
-        self.assertEqual(path, 'my/package/eventhandlers.py')
-        self.assertEqual(dottedname, 'zope.app.component.hooks.getSite')
+        self.assertEqual(len(results), 2)
+        getSite, setSite = results
+
+        self.assertEqual(getSite, ('my/package/eventhandlers.py',
+                                   'zope.app.component.hooks.getSite'))
+
+        self.assertEqual(setSite, ('my/package/eventhandlers.py',
+                                   'zope.app.component.hooks.setSite'))
 
     def test_zcml_for(self):
         registry = getUtility(IImportRegistry)

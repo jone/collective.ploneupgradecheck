@@ -61,7 +61,7 @@ class TestFileRegistry(TestCase):
         self.assertFalse(registry.find_files())
 
     def test_grep(self):
-        regexp = re.compile('from (.*?) import (getSite)')
+        regexp = re.compile('def ([a-zA-Z0-9_]*)(\(.*?\):)')
 
         registry = getUtility(IFileRegistry)
         matches = registry.grep(regexp, extensions=['py'])
@@ -72,4 +72,4 @@ class TestFileRegistry(TestCase):
         path = relative_path(registry.get_basedir(), match.get('path'))
         self.assertEqual(path, 'my/package/eventhandlers.py')
 
-        self.assertEqual(match.get('groups'), ('zope.app.component.hooks', 'getSite'))
+        self.assertEqual(match.get('groups'), ('object_removed', '(obj, event):'))

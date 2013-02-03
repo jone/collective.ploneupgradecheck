@@ -12,8 +12,10 @@ from         #
 (\S*?)       # Non-whitespace string.
 \s+          # Whitespace.
 import       #
-\s+          # Whitespace.
-(\S*)        # Non-whitespace string.
+ +           # Whitespace.
+(            # Start of module
+[\S ,\.]+    # each word
+)            # End of module
 """, re.VERBOSE)
 
 
@@ -110,9 +112,12 @@ class ImportRegistry(object):
         registry = getUtility(IFileRegistry)
 
         for item in registry.grep(PY_IMPORT_PATTERN, ['py']):
-            dottedname = '.'.join(item.get('groups'))
             path = item.get('path')
-            self._register(dottedname, path)
+            package, module = map(str.strip, item.get('groups'))
+            modules = map(str.strip, module.split(','))
+
+            for mod in modules:
+                self._register('.'.join((package, mod)), path)
 
     def _load_zcml_for(self):
         registry = getUtility(IFileRegistry)
