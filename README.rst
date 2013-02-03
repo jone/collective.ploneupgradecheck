@@ -37,3 +37,13 @@ Contributions
 
 Contributions are welcome!
 Fork the repository on github, change your code and make a pull request.
+
+
+License
+-------
+
+"THE BEER-WARE LICENSE" (Revision 42):
+
+jone_ wrote this script. As long as you retain this notice you
+can do whatever you want with this stuff. If we meet some day, and you think
+this stuff is worth it, you can buy me a beer in return.

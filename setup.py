@@ -33,7 +33,7 @@ setup(name='collective.ploneupgradecheck',
       author_email='mailto:jone@jone.ch',
       url='https://github.com/jone/collective.ploneupgradecheck',
 
-      license='GPL2',
+      license='Beerware42',
       packages=find_packages(exclude=['ez_setup']),
       namespace_packages=['collective', ],
       include_package_data=True,
