@@ -7,4 +7,24 @@
         handler=".eventhandlers.object_removed"
         />
 
+    <configure package="another.package">
+        <subscriber
+            for='*
+                 foo.bar'
+            />
+
+        <utility component="a.fancy.utility" />
+
+    </configure>
+
+    <adapter factory="my.adapter" />
+
+    <page
+        for="*"
+        name="foo"
+        permission="zope2.View"
+        class="the.view.View"
+        layer="on.the.ILayer"
+        />
+
 </configure>
