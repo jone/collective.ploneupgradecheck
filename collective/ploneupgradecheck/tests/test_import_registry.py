@@ -8,16 +8,16 @@ from zope.component import getUtility
 from zope.interface.verify import verifyClass
 
 
-def make_paths_relative(basedir, result):
+def make_paths_relative(result):
+    basedir = getUtility(IFileRegistry).get_basedir()
+
     for path, dottedname in result:
         path = relative_path(basedir, path)
         yield path, dottedname
 
 
 def filter_results_by_path(path, results):
-    basedir = getUtility(IFileRegistry).get_basedir()
-
-    for result_path, dottedname in make_paths_relative(basedir, results):
+    for result_path, dottedname in make_paths_relative(results):
         if result_path == path:
             yield (result_path, dottedname)
 
@@ -102,3 +102,25 @@ class TestImportRegistry(TestCase):
         path, dottedname = results[0]
         self.assertEqual(path, 'my/package/configure.zcml')
         self.assertEqual(dottedname, 'on.the.ILayer')
+
+    def test_doctest_import(self):
+        registry = getUtility(IImportRegistry)
+        results = registry.get_imports('zope.testbrowser')
+        results = list(sorted(make_paths_relative(results)))
+
+        self.assertEqual(len(results), 2)
+        rst, txt = results
+
+        self.assertEqual(rst, ('my/package/doctest1.rst', 'zope.testbrowser.browser.Browser'))
+        self.assertEqual(txt, ('my/package/doctest2.txt', 'zope.testbrowser.browser.Browser'))
+
+    def test_doctest_from_import(self):
+        registry = getUtility(IImportRegistry)
+        results = registry.get_imports('os.path')
+        results = list(sorted(make_paths_relative(results)))
+
+        self.assertEqual(len(results), 2)
+        rst, txt = results
+
+        self.assertEqual(rst, ('my/package/doctest1.rst', 'os.path'))
+        self.assertEqual(txt, ('my/package/doctest2.txt', 'os.path'))

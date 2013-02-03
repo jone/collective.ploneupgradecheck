@@ -39,6 +39,41 @@ ZCML_SINGLE_LINE = re.compile(r"""
 """, re.VERBOSE)
 
 
+DOCTEST_IMPORT = re.compile(r"""
+\s+          # Whitespace.
+>>>          # Doctestmarker.
+\s+          # Whitespace.
+import       # 'import' keyword
+\s+          # Whitespace
+(            # Start dottedname
+\S+          # Non-whitespace string.
+)            # End of dottedname
+""", re.VERBOSE)
+
+
+DOCTEST_FROM_IMPORT = re.compile(r"""
+\s+          # Whitespace.
+>>>          # Doctestmarker.
+\s+          # Whitespace.
+from         # 'from' keyword
+\s+          # Whitespace
+(            # Start of package
+\S+          # Non-whitespace string.
+)            # End of package
+\s+          # Whitespace.
+import       # 'import' keyword
+\s+          # Whitespace.
+(            # Start of module
+[            # Any of:
+  a-zA-Z     # a-z
+  0-9        # numbers
+  ,          # comma
+  \s         # whitespace
+]+           # more than one.
+)            # End of module
+""", re.VERBOSE)
+
+
 class ImportRegistry(object):
     implements(IImportRegistry)
 
@@ -62,6 +97,7 @@ class ImportRegistry(object):
         self._load_py_imports()
         self._load_zcml_for()
         self._load_zcml_single_line()
+        self._load_doctest_imports()
 
         self.loaded = True
         return True
@@ -94,6 +130,19 @@ class ImportRegistry(object):
         for item in registry.grep(ZCML_SINGLE_LINE, ['zcml']):
             _attr, dottedname = item.get('groups')
             self._register(dottedname.strip(), item.get('path'))
+
+    def _load_doctest_imports(self):
+        registry = getUtility(IFileRegistry)
+
+        for item in registry.grep(DOCTEST_IMPORT, ['rst', 'txt']):
+            dottedname = item.get('groups')
+            path = item.get('path')
+            self._register(dottedname, path)
+
+        for item in registry.grep(DOCTEST_FROM_IMPORT, ['rst', 'txt']):
+            dottedname = '.'.join(map(str.strip, item.get('groups')))
+            path = item.get('path')
+            self._register(dottedname, path)
 
     def _register(self, dottedname, path):
         if dottedname not in self._dottedname_to_paths:
