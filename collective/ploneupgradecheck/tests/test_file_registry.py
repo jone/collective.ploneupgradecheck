@@ -73,3 +73,8 @@ class TestFileRegistry(TestCase):
         self.assertEqual(path, 'my/package/eventhandlers.py')
 
         self.assertEqual(match.get('groups'), ('object_removed', '(obj, event):'))
+
+    def test_ignored_files_not_in_registry(self):
+        registry = getUtility(IFileRegistry)
+
+        self.assertNotIn('foo', registry._files_by_extension)

@@ -3,6 +3,13 @@ from zope.interface import implements
 import os
 
 
+IGNRORE_DIRS = [
+    '.svn',
+    '.git',
+    'parts',
+    ]
+
+
 class FileRegistry(object):
     implements(IFileRegistry)
 
@@ -28,6 +35,9 @@ class FileRegistry(object):
         self._basedir = path
 
         for dirname, dirnames, filenames in os.walk(path):
+            if self._is_ignored(dirname):
+                continue
+
             for name in filenames:
                 path = os.path.join(dirname, name)
                 self._add(path)
@@ -60,6 +70,12 @@ class FileRegistry(object):
             self._files_by_extension[ext] = []
 
         self._files_by_extension[ext].append(path)
+
+    def _is_ignored(self, path):
+        for name in IGNRORE_DIRS:
+            if path.endswith('/%s' % name) or '/%s/' % name in path:
+                return True
+        return False
 
 def create_file_registry():
     return FileRegistry()
