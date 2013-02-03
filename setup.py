@@ -49,4 +49,10 @@ setup(name='collective.ploneupgradecheck',
         ],
 
       tests_require=tests_require,
-      extras_require=extras_require)
+      extras_require=extras_require,
+
+      entry_points = {
+        'console_scripts': [
+            'plone-4.3-check = collective.ploneupgradecheck.plone43:check',
+            ],
+        })
