@@ -1,0 +1,10 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+    <subscriber
+        for="*
+             zope.app.container.interfaces.IObjectRemovedEvent"
+        handler=".eventhandlers.object_removed"
+        />
+
+</configure>

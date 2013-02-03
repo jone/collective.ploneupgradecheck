@@ -6,6 +6,8 @@ version = '1.0.dev0'
 
 
 tests_require = [
+    'unittest2',
+    'plone.testing',
     ]
 
 
@@ -41,6 +43,9 @@ setup(name='collective.ploneupgradecheck',
 
       install_requires=[
         'setuptools',
+        'zope.interface',
+        'zope.component',
+        'zope.configuration',
         ],
 
       tests_require=tests_require,
