@@ -1,24 +1,13 @@
 from collective.ploneupgradecheck.files import FileRegistry
 from collective.ploneupgradecheck.interfaces import IFileRegistry
 from collective.ploneupgradecheck.testing import ZCML_LAYER
+from collective.ploneupgradecheck.tests.utils import relative_path
+from collective.ploneupgradecheck.tests.utils import relative_paths
 from unittest2 import TestCase
 from zope.component import getUtility
 from zope.interface.verify import verifyClass
 import os.path
 import re
-
-
-def relativize_paths(basedir, paths):
-    new_paths = []
-
-    if not basedir.endswith('/'):
-        basedir = basedir + '/'
-
-    for path in paths:
-        assert path.startswith(basedir), '%s does not start with %s' % (path, basedir)
-        new_paths.append(path[len(basedir):])
-
-    return new_paths
 
 
 class TestFileRegistry(TestCase):
@@ -40,15 +29,15 @@ class TestFileRegistry(TestCase):
     def test_find_files(self):
         registry = getUtility(IFileRegistry)
 
-        py_files = relativize_paths(registry.get_basedir(), registry.find_files(['py']))
+        py_files = relative_paths(registry.get_basedir(), registry.find_files(['py']))
         self.assertIn('my/package/eventhandlers.py', py_files)
         self.assertNotIn('my/package/configure.zcml', py_files)
 
-        zcml_files = relativize_paths(registry.get_basedir(), registry.find_files(['zcml']))
+        zcml_files = relative_paths(registry.get_basedir(), registry.find_files(['zcml']))
         self.assertNotIn('my/package/eventhandlers.py', zcml_files)
         self.assertIn('my/package/configure.zcml', zcml_files)
 
-        both_files = relativize_paths(registry.get_basedir(), registry.find_files(['zcml', 'py']))
+        both_files = relative_paths(registry.get_basedir(), registry.find_files(['zcml', 'py']))
         self.assertIn('my/package/eventhandlers.py', both_files)
         self.assertIn('my/package/configure.zcml', both_files)
 
@@ -80,7 +69,7 @@ class TestFileRegistry(TestCase):
         self.assertEqual(len(matches), 1)
         match = matches[0]
 
-        path = relativize_paths(registry.get_basedir(), [match.get('path')])[0]
+        path = relative_path(registry.get_basedir(), match.get('path'))
         self.assertEqual(path, 'my/package/eventhandlers.py')
 
         self.assertEqual(match.get('groups'), ('zope.app.component.hooks', 'getSite'))
