@@ -39,6 +39,19 @@ class FileRegistry(object):
     def get_basedir(self):
         return self._basedir
 
+    def grep(self, regexp, extensions=None):
+        matches = []
+
+        for path in self.find_files(extensions=extensions):
+            with open(path) as file_:
+                contents = file_.read()
+
+            for groups in regexp.findall(contents):
+                matches.append({'path': path,
+                                'groups': groups})
+
+        return matches
+
     def _add(self, path):
         _name, ext = os.path.splitext(path)
         ext = ext[1:]

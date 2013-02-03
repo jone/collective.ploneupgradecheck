@@ -22,3 +22,8 @@ class IFileRegistry(Interface):
         """Returns the base directory with which the registry was loaded or ``None`` if it
         was not loaded yet.
         """
+
+    def grep(regexp, extensions=None):
+        """Greps all files with the passed ``extensions`` for a ``regexp`` (compiled) per
+        line.
+        """

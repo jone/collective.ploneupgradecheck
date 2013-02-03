@@ -5,6 +5,7 @@ from unittest2 import TestCase
 from zope.component import getUtility
 from zope.interface.verify import verifyClass
 import os.path
+import re
 
 
 def relativize_paths(basedir, paths):
@@ -69,3 +70,17 @@ class TestFileRegistry(TestCase):
 
         self.assertFalse(registry.get_basedir())
         self.assertFalse(registry.find_files())
+
+    def test_grep(self):
+        regexp = re.compile('from (.*?) import (getSite)')
+
+        registry = getUtility(IFileRegistry)
+        matches = registry.grep(regexp, extensions=['py'])
+
+        self.assertEqual(len(matches), 1)
+        match = matches[0]
+
+        path = relativize_paths(registry.get_basedir(), [match.get('path')])[0]
+        self.assertEqual(path, 'my/package/eventhandlers.py')
+
+        self.assertEqual(match.get('groups'), ('zope.app.component.hooks', 'getSite'))
