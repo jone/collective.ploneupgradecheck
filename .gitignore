@@ -5,7 +5,6 @@
 .mr.developer.cfg
 bin/
 build/
-buildout.cfg
 coverage/
 develop-eggs/
 dist/
