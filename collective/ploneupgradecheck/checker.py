@@ -1,7 +1,24 @@
-from collective.ploneupgradecheck.interfaces import IImportRegistry
 from collective.ploneupgradecheck.colorstring import ColorString
+from collective.ploneupgradecheck.interfaces import IImportRegistry
 from zope.component import getUtility
 
+
+def only_once(method):
+    """Decorator for reducing multiple calls with the same
+    arguments to a method by skipping repeated calls.
+    """
+
+    method._only_once_registry = {}
+
+    def _wrapped(*args, **kwargs):
+        key = (tuple(args[1:]), tuple(kwargs.items()))
+
+        if key not in method._only_once_registry:
+            method._only_once_registry[key] = method(*args, **kwargs)
+
+        return method._only_once_registry[key]
+
+    return _wrapped
 
 
 class Checker(object):
@@ -14,6 +31,7 @@ class Checker(object):
         self.check_moved_imports()
         self.check_removed()
 
+    @only_once
     def error(self, path, msg, details=None):
         print ColorString(path, 'blue')
         print '   ', msg
